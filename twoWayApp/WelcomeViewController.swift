@@ -10,6 +10,9 @@ import SnapKit
 
 class WelcomeViewController: UIViewController {
     
+    // MARK: - Services
+    private let storyService = DailyStoryService.shared
+    
     // MARK: - UI Components
     
     private let titleLabel: UILabel = {
@@ -78,6 +81,9 @@ class WelcomeViewController: UIViewController {
         setupUI()
         setupLayout()
         setupActions()
+        
+        // Firebase test - bugünün hikayesi var mı kontrol et
+        checkTodaysStory()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -129,7 +135,6 @@ class WelcomeViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(AppLayout.spacing)
         }
         
-        
         startButton.snp.makeConstraints { make in
             make.top.equalTo(storyTitleLabel.snp.bottom).offset(AppLayout.spacingDouble)
             make.bottom.equalToSuperview().inset(AppLayout.spacingDouble)
@@ -141,6 +146,54 @@ class WelcomeViewController: UIViewController {
     
     private func setupActions() {
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+    }
+    
+    // MARK: - Firebase Methods
+    
+    private func checkTodaysStory() {
+        // Bugünün hikayesi tamamlandı mı kontrol et
+        if storyService.isTodaysStoryCompleted() {
+            showCompletedState()
+            return
+        }
+        
+        // Bugünün hikayesini Firebase'ten çek
+        storyService.fetchTodaysStory { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let story):
+                    self?.showStory(story)
+                case .failure(let error):
+                    self?.showError(error)
+                }
+            }
+        }
+    }
+    
+    private func showStory(_ story: DailyStory) {
+        // Firebase'ten gelen veriyle UI'ı güncelle
+        storyTitleLabel.text = story.title
+        print("✅ Firebase'ten hikaye yüklendi: \(story.title)")
+        print("📖 İlk node: \(story.nodes[story.startNodeId]?.text ?? "Bulunamadı")")
+    }
+    
+    private func showCompletedState() {
+        startButton.setTitle("Hikaye Tamamlandı", for: .normal)
+        startButton.backgroundColor = AppColors.secondaryText
+        startButton.isEnabled = false
+        print("ℹ️ Bugünün hikayesi zaten tamamlanmış")
+    }
+    
+    private func showError(_ error: StoryError) {
+        startButton.setTitle("Bağlantı Hatası", for: .normal)
+        startButton.backgroundColor = AppColors.danger
+        print("❌ Firebase hatası: \(error.localizedDescription)")
+        
+        // 3 saniye sonra tekrar dene
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.startButton.setTitle(AppContent.startButtonTitle, for: .normal)
+            self.startButton.backgroundColor = AppColors.primary
+        }
     }
     
     // MARK: - Actions
@@ -155,11 +208,8 @@ class WelcomeViewController: UIViewController {
             }
         }
         
-        // Hikaye ekranına geçiş
-        print("🎭 Hikaye başlatılıyor - Gece Vardiyası!")
-        
-        // TODO: HikayeViewController'a geçiş
-        // let hikayeVC = HikayeViewController()
-        // navigationController?.pushViewController(hikayeVC, animated: true)
+        // Firebase test
+        print("🎮 Başla butonuna basıldı - Firebase test başlıyor!")
+        checkTodaysStory()
     }
 } 

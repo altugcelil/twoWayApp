@@ -1,59 +1,28 @@
-# TwoWayApp - İnteraktif Hikaye Uygulaması Cursor Rules
+# TwoWayApp - Günlük İnteraktif Hikaye Uygulaması Cursor Rules
 
 ## 📖 PROJE ÖZETİ
-Bu iOS uygulaması "Gece Vardiyası" adlı interaktif gerilim hikayesini sunan bir uygulama.
+Bu iOS uygulaması her gün farklı bir interaktif hikaye sunan günlük hikaye uygulaması.
 
-## 🎭 HİKAYE DETAYLARİ
-**Başlık**: Gece Vardiyası
+## 🎯 UYGULAMA KONSEPTİ
+- **Her gün 1 hikaye**: Tüm kullanıcılar aynı günün hikayesini oynar
+- **Firebase'ten çekme**: Günlük hikaye Firebase'ten dinamik olarak yüklenir
+- **Tek sefer oynanır**: Hikaye bitince tekrar oynanamaz (premium özellik olabilir)
+- **Online-only**: Offline oynanmaz, internet gerekir
+- **Flexible format**: Farklı hikayeler farklı seçenek sayısına sahip olabilir
+
+## 📅 GÜNLÜK HİKAYE SİSTEMİ
+### İlk Örnek Hikaye: "Gece Vardiyası"
 **Tür**: İnteraktif Gerilim Hikayesi  
 **Süre**: 8-15 dakika
 **Ana Karakter**: Dr. Sarah Martinez (15 yıllık tecrübeli doktor)
 **Konu**: Hastanede ilaç kaçakçılığı keşfetme
 **Tema**: Ahlaki ikilem, dostluk vs adalet, para vs vicdan
 
-## 👥 ANA KARAKTERLER
-- **Dr. Sarah Martinez**: Ana karakter - 15 yıllık tecrübeli doktor
-- **Mehmet**: Güvenlik görevlisi - kızının ameliyatı için para lazım, suça ortak  
-- **Dr. Rıfat Coşkun**: Eczane müdürü - operasyonun lideri
-- **Dr. Kerem**: İdareci doktor - güvenilir kişi
-
-## 🛤️ YAPISAL ÖZELLİKLER
-### 2 Ana Yol:
-- **A) Güvenlik Arama Yolu**: Mehmet'i bulma rotası
-- **B) Tek Başına Çıkma Yolu**: 4. kata tek başına çıkma
-
-### Sonuç Dağılımı (9 Farklı Son):
-- **3 Erken Ölüm**: Bazı seçimler 2-3 adımda bitiyor  
-- **2 Suç Ortağı**: Para karşılığı susma sonuçları
-- **4 Çeşit Başarı**: Güvenli başarısız, kahraman, bedelli kahraman, süper kahraman
-
-### Risk-Ödül Dengesi:
-- **Erken Çıkış**: Güvenli ama başarısız sonuçlar
-- **Devam Etme**: Riskli ama büyük ödül sonuçları
-- **Uzun Rotalar**: 5 adım, daha kompleks hikaye
-
-## 📝 YAZIM STİLİ ÖZELLİKLERİ
-- Detaylı atmosfer kurma (hastane ortamı)
-- Gerçekçi diyaloglar ve karakter motivasyonları  
-- Ahlaki ikilemler (dostluk vs adalet)
-- Yetişkin için ciddi konular
-- Her seçim sonrasında tension artışı
-- Karakter tutarlılığı (Mehmet her iki yolda da aynı motivasyon)
-
-## 🏗️ TEKNİK DETAYLAR
-- **Toplam Seçenek**: 15
-- **Toplam Son**: 9  
-- **Erken Son**: 3
-- **Ölüm Sayısı**: 3
-- **Başarı Sayısı**: 4
-- **Başarısızlık Sayısı**: 2
-
-## 🎯 GELİŞTİRME PLANI
-1. **Data Model**: JSON hikaye yapısını Swift'e çevirme
-2. **UI Architecture**: Modern iOS hikaye okuyucu arayüzü
-3. **Game Logic**: Karar verme ve hikaye akış sistemi  
-4. **Visual Design**: Atmosferik ve sürükleyici tasarım
-5. **Polish & Test**: Son rötuşlar ve test
+### Hikaye Yapısı (Esnek):
+- **2-4 seçenek** per node olabilir
+- **Farklı derinlikler** (2-6 level) mümkün
+- **Multiple endings** (3-9 farklı son)
+- **Risk-reward system** entegre
 
 ## 📱 iOS PROJE BİLGİLERİ
 - **Proje Adı**: twoWayApp
@@ -61,27 +30,36 @@ Bu iOS uygulaması "Gece Vardiyası" adlı interaktif gerilim hikayesini sunan b
 - **Dil**: Swift
 - **UI Framework**: UIKit + SnapKit (Programatik)
 - **Architecture**: MVVM
+- **Backend**: Firebase Firestore
 - **Minimum iOS**: 14.0+
 - **Git Branch**: develop
 
+## 🏗️ TEKNİK STACK
+### Data Models:
+- `DailyStory`: Firebase'ten çekilen günlük hikaye
+- `StoryNode`: Flexible seçenek sayısı destekli
+- `Choice`: Hedef node veya instant ending
+- `StoryEnding`: Basit ending sistemi
+
+### Services:
+- `DailyStoryService`: Firebase integration
+- UserDefaults ile completion tracking
+
+### UI Components:
+- `WelcomeViewController`: Ana giriş ekranı
+- Future: `StoryViewController`: Hikaye oynatma ekranı
+
 ## 🎨 TASARIM YÖNELİMLERİ
-- Karanlık, hastane atmosferi
-- Gerilim odaklı renk paleti
-- Okunabilir tipografi
-- Sürükleyici animasyonlar
+- Karanlık, gerilim atmosferi
 - Modern iOS tasarım dili
+- Sürükleyici animasyonlar
+- Okunabilir tipografi
 
 ## 📐 ADAPTIVE LAYOUT SİSTEMİ
 ### Spacing Kuralları:
 - **Standart spacing**: 16px base
 - **spacingHalf**: 8px (küçük boşluklar)
 - **spacingDouble**: 32px (büyük boşluklar)
-
-### Adaptive Approach:
-- Safe Area uyumlu margin hesaplama
-- Dynamic Type destekli fontlar
-- Ekran boyutuna göre adaptive card sizing
-- iPhone/iPad responsive layout
 
 ### Constants Yapısı:
 ```swift
@@ -91,20 +69,32 @@ AppLayout: Spacing ve sizing (adaptive)
 AppContent: Tüm string'ler
 ```
 
+## 🔥 FIREBASE STRUCTURE
+```
+daily_stories/
+  2025-01-28/
+    date: "2025-01-28"
+    title: "Gece Vardiyası"
+    estimatedDuration: "8-15 dk"
+    genre: "Gerilim"
+    startNodeId: "opening"
+    nodes: { ... }
+```
+
 ## ⚠️ ÖNEMLİ NOTLAR
 - Hikaye metinleri Türkçe
-- Yetişkin hedef kitle
-- Ahlaki ikilemler vurgulanmalı
-- Karakter gelişimi önemli
-- Her seçimin sonuçları mantıklı olmalı
+- Field names İngilizce
+- Her gün yeni hikaye güncellenir
 - Kullanıcı deneyimi akıcı olmalı
+- Online bağımlı uygulama
+- Basit ve odaklanmış yapı
 
 ## 🔄 GELİŞTİRME KURALLARI
 - Her commit açıklayıcı mesaj içermeli
 - Kod Türkçe yorumlarla desteklenmeli  
 - UI bileşenleri modüler yapılmalı
-- Data model genişletilebilir olmalı
-- Test edilebilir kod yazılmalı
-- Performance optimize edilmeli
+- Firebase integration secure olmalı
+- Error handling comprehensive olmalı
 - Adaptive layout prensiplerine uy
-- 16px base spacing kullan 
+- 16px base spacing kullan
+- Basitlik öncelik - over-engineering yapma 

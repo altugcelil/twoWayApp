@@ -6,6 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		394961F92E36E07B00A77514 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 394961F82E36E07B00A77514 /* SnapKit */; };
+		394961FE2E36E13700A77514 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 394961FD2E36E13700A77514 /* FirebaseAnalytics */; };
+		394962002E36E13700A77514 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 394961FF2E36E13700A77514 /* FirebaseAuth */; };
+		394962022E36E13700A77514 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 394962012E36E13700A77514 /* FirebaseDatabase */; };
+		394962042E36E13700A77514 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 394962032E36E13700A77514 /* FirebaseFirestore */; };
+		394962062E36E13700A77514 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 394962052E36E13700A77514 /* FirebaseRemoteConfig */; };
+		394962082E36E13700A77514 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 394962072E36E13700A77514 /* FirebaseStorage */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		394961BF2E36DED600A77514 /* twoWayApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = twoWayApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +46,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				394962022E36E13700A77514 /* FirebaseDatabase in Frameworks */,
+				394961F92E36E07B00A77514 /* SnapKit in Frameworks */,
+				394962062E36E13700A77514 /* FirebaseRemoteConfig in Frameworks */,
+				394961FE2E36E13700A77514 /* FirebaseAnalytics in Frameworks */,
+				394962082E36E13700A77514 /* FirebaseStorage in Frameworks */,
+				394962002E36E13700A77514 /* FirebaseAuth in Frameworks */,
+				394962042E36E13700A77514 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +95,13 @@
 			);
 			name = twoWayApp;
 			packageProductDependencies = (
+				394961F82E36E07B00A77514 /* SnapKit */,
+				394961FD2E36E13700A77514 /* FirebaseAnalytics */,
+				394961FF2E36E13700A77514 /* FirebaseAuth */,
+				394962012E36E13700A77514 /* FirebaseDatabase */,
+				394962032E36E13700A77514 /* FirebaseFirestore */,
+				394962052E36E13700A77514 /* FirebaseRemoteConfig */,
+				394962072E36E13700A77514 /* FirebaseStorage */,
 			);
 			productName = twoWayApp;
 			productReference = 394961BF2E36DED600A77514 /* twoWayApp.app */;
@@ -107,6 +131,10 @@
 			);
 			mainGroup = 394961B62E36DED600A77514;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				394961F72E36E07B00A77514 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 394961C02E36DED600A77514 /* Products */;
 			projectDirPath = "";
@@ -335,6 +363,63 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		394961F72E36E07B00A77514 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		394961F82E36E07B00A77514 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394961F72E36E07B00A77514 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		394961FD2E36E13700A77514 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		394961FF2E36E13700A77514 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		394962012E36E13700A77514 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		394962032E36E13700A77514 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		394962052E36E13700A77514 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		394962072E36E13700A77514 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 394961FC2E36E13700A77514 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 394961B72E36DED600A77514 /* Project object */;
 }

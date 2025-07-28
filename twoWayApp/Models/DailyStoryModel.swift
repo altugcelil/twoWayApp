@@ -51,7 +51,16 @@ struct StoryEnding: Codable {
 
 // MARK: - Ending Types
 enum EndingType: String, Codable, CaseIterable {
-    case good = "good"          // ✅ Firebase ile uyumlu
+    case güvenli_başarısız = "güvenli_başarısız"
+    case erken_ölüm = "erken_ölüm"
+    case ölüm = "ölüm"
+    case suç_ortağı = "suç_ortağı"
+    case kahraman = "kahraman"
+    case kahraman_bedelli = "kahraman_bedelli"
+    case süper_kahraman = "süper_kahraman"
+    
+    // Legacy types for backward compatibility
+    case good = "good"
     case success = "success"
     case failure = "failure"
     case death = "death"

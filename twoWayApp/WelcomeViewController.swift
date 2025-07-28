@@ -10,6 +10,9 @@ import SnapKit
 
 class WelcomeViewController: UIViewController {
     
+    // MARK: - Properties
+    private var currentStory: DailyStory?
+    
     // MARK: - Services
     private let storyService = DailyStoryService.shared
     
@@ -171,6 +174,9 @@ class WelcomeViewController: UIViewController {
     }
     
     private func showStory(_ story: DailyStory) {
+        // Story'yi kaydet
+        currentStory = story
+        
         // Firebase'ten gelen veriyle UI'ı güncelle
         storyTitleLabel.text = story.title
         print("✅ Firebase'ten hikaye yüklendi: \(story.title)")
@@ -208,8 +214,17 @@ class WelcomeViewController: UIViewController {
             }
         }
         
-        // Firebase test
-        print("🎮 Başla butonuna basıldı - Firebase test başlıyor!")
-        checkTodaysStory()
+        print("🎮 Başla butonuna basıldı!")
+        
+        // Eğer hikaye varsa story ekranına git
+        if let story = currentStory {
+            print("📖 Story ekranına geçiliyor: \(story.title)")
+            let storyViewController = StoryViewController(story: story)
+            navigationController?.pushViewController(storyViewController, animated: true)
+        } else {
+            // Hikaye yoksa Firebase'ten çek
+            print("🔄 Hikaye yükleniyor...")
+            checkTodaysStory()
+        }
     }
 } 

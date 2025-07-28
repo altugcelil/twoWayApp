@@ -24,7 +24,12 @@ struct AppColors {
     
     // Accent & Button
     static let primary = UIColor(red: 0.0, green: 0.48, blue: 0.65, alpha: 1.0)         // #007BA6
+    static let accent = primary  // Alias for modern naming
     static let buttonText = UIColor.white
+    
+    // Text Colors (Modern naming)
+    static let textPrimary = primaryText      // Modern alias
+    static let textSecondary = secondaryText  // Modern alias
     
     // System Colors (iOS adaptive)
     static let danger = UIColor.systemRed

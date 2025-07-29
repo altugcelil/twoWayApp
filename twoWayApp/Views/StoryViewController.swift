@@ -12,11 +12,6 @@ class StoryViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     
-    // Header
-    private let headerView = UIView()
-    private let storyTitleLabel = UILabel()
-    private let progressView = UIProgressView()
-    
     // Story Content
     private let storyCard = UIView()
     private let storyTextLabel = UILabel()
@@ -41,6 +36,10 @@ class StoryViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Hide navigation bar for full-screen immersive experience
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        
         setupUI()
         setupLayout()
         setupActions()
@@ -49,38 +48,23 @@ class StoryViewController: UIViewController {
         print("🎮 StoryViewController yüklendi - Node: \(currentNodeId)")
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Show navigation bar when going back
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
     // MARK: - UI Setup
     private func setupUI() {
         view.backgroundColor = AppColors.background
         
-        setupHeader()
         setupStoryCard()
         setupChoicesSection()
         setupScrollView()
     }
     
-    private func setupHeader() {
-        // Header background with gradient
-        headerView.backgroundColor = AppColors.cardBackground
-        headerView.layer.shadowColor = UIColor.black.cgColor
-        headerView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        headerView.layer.shadowRadius = 8
-        headerView.layer.shadowOpacity = 0.1
-        
-        // Story Title - Centered typography
-        storyTitleLabel.text = story.title
-        storyTitleLabel.font = AppFonts.titleLarge
-        storyTitleLabel.textColor = AppColors.textPrimary
-        storyTitleLabel.textAlignment = .center
-        storyTitleLabel.numberOfLines = 2
-        
-        // Progress View
-        progressView.progressTintColor = AppColors.accent
-        progressView.trackTintColor = AppColors.background
-        progressView.layer.cornerRadius = 2
-        progressView.clipsToBounds = true
-        progressView.progress = 0.1 // Initial progress
-    }
+
     
     private func setupStoryCard() {
         // Story Card - Modern card design
@@ -126,44 +110,22 @@ class StoryViewController: UIViewController {
     }
     
     private func setupLayout() {
-        view.addSubviews([headerView, scrollView])
-        headerView.addSubviews([storyTitleLabel, progressView])
+        view.addSubviews([scrollView])
         scrollView.addSubview(contentView)
         contentView.addSubviews([storyCard, choicesContainerView])
         storyCard.addSubviews([storyTextLabel, readingTimeLabel])
         choicesContainerView.addSubviews([choicesTitleLabel, choicesStackView])
         
-        setupHeaderLayout()
         setupScrollViewLayout()
         setupContentLayout()
     }
     
-    private func setupHeaderLayout() {
-        // Header
-        headerView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(80) // Reduced height since no back button
-        }
-        
-        // Story Title - Centered positioning (no back button)
-        storyTitleLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(AppLayout.horizontalMargin)
-            make.top.equalToSuperview().offset(AppLayout.spacing)
-        }
-        
-        // Progress View
-        progressView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(AppLayout.horizontalMargin)
-            make.bottom.equalToSuperview().offset(-AppLayout.spacing)
-            make.height.equalTo(4)
-        }
-    }
+
     
     private func setupScrollViewLayout() {
         // Scroll View
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -487,27 +449,17 @@ class StoryViewController: UIViewController {
     }
     
     private func updateProgress() {
-        // Simple progress calculation - could be more sophisticated
-        let totalNodes = story.nodes.count
-        let currentProgress = min(1.0, progressView.progress + 0.1)
-        
-        UIView.animate(withDuration: 0.3) {
-            self.progressView.progress = currentProgress
-        }
+        // Progress tracking removed with header
+        // Could implement alternative progress indication if needed
     }
     
     private func handleStoryCompletion() {
-        // Complete progress
-        UIView.animate(withDuration: 0.5) {
-            self.progressView.progress = 1.0
-        }
-        
         // Story'yi tamamlandı olarak işaretle
         storyService.markTodaysStoryCompleted()
         print("✅ Hikaye tamamlandı ve kaydedildi")
         
-        // Welcome screen'e dön with delay for visual feedback
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        // Welcome screen'e dön
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.navigationController?.popViewController(animated: true)
         }
     }

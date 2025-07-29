@@ -49,23 +49,55 @@ struct StoryEnding: Codable {
     let type: EndingType                // success, failure, death, etc.
 }
 
-// MARK: - Ending Types
+// MARK: - Ending Types (Hierarchical System)
 enum EndingType: String, Codable, CaseIterable {
-    case güvenli_başarısız = "güvenli_başarısız"
-    case erken_ölüm = "erken_ölüm"
-    case ölüm = "ölüm"
-    case suç_ortağı = "suç_ortağı"
-    case kahraman = "kahraman"
-    case kahraman_bedelli = "kahraman_bedelli"
-    case süper_kahraman = "süper_kahraman"
+    // New Hierarchical System (Level 1-4, 1 = Best, 4 = Worst)
+    case success = "success"           // Level 1: Perfect success, no cost
+    case light_cost = "light_cost"     // Level 2: Success with minor cost
+    case heavy_cost = "heavy_cost"     // Level 3: Survival with major cost
+    case death = "death"               // Level 4: Character dies
     
     // Legacy types for backward compatibility
-    case good = "good"
-    case success = "success"
-    case failure = "failure"
-    case death = "death"
-    case heroic = "heroic"
-    case compromise = "compromise"
+    case güvenli_başarısız = "güvenli_başarısız"     // Maps to: heavy_cost
+    case erken_ölüm = "erken_ölüm"                   // Maps to: death
+    case ölüm = "ölüm"                               // Maps to: death
+    case suç_ortağı = "suç_ortağı"                   // Maps to: light_cost
+    case kahraman = "kahraman"                       // Maps to: success
+    case kahraman_bedelli = "kahraman_bedelli"       // Maps to: light_cost
+    case süper_kahraman = "süper_kahraman"           // Maps to: success
+    case good = "good"                               // Maps to: success
+    case failure = "failure"                        // Maps to: heavy_cost
+    case heroic = "heroic"                          // Maps to: success
+    case compromise = "compromise"                   // Maps to: light_cost
+    
+    // Helper computed property for hierarchy level
+    var hierarchyLevel: Int {
+        switch self {
+        case .success, .kahraman, .süper_kahraman, .good, .heroic:
+            return 1 // Best
+        case .light_cost, .kahraman_bedelli, .suç_ortağı, .compromise:
+            return 2 // Light cost
+        case .heavy_cost, .güvenli_başarısız, .failure:
+            return 3 // Heavy cost
+        case .death, .ölüm, .erken_ölüm:
+            return 4 // Worst
+        }
+    }
+    
+    // Helper computed property for display name
+    var displayName: String {
+        switch self {
+        case .success: return "Perfect Success"
+        case .light_cost: return "Success with Minor Cost"
+        case .heavy_cost: return "Survival with Major Cost"
+        case .death: return "Death"
+        // Legacy mappings
+        case .kahraman, .süper_kahraman, .good, .heroic: return "Perfect Success"
+        case .kahraman_bedelli, .suç_ortağı, .compromise: return "Success with Minor Cost"
+        case .güvenli_başarısız, .failure: return "Survival with Major Cost"
+        case .ölüm, .erken_ölüm: return "Death"
+        }
+    }
 }
 
 // MARK: - Game State (Basit)

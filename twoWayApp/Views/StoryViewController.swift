@@ -12,6 +12,10 @@ class StoryViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     
+    // Story Image
+    private let storyImageView = UIImageView()
+    private let imageLoadingIndicator = UIActivityIndicatorView(style: .medium)
+    
     // Story Content
     private let storyCard = UIView()
     private let storyTextLabel = UILabel()
@@ -59,12 +63,29 @@ class StoryViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = AppColors.background
         
+        setupStoryImageView()
         setupStoryCard()
         setupChoicesSection()
         setupScrollView()
     }
     
-
+    
+    private func setupStoryImageView() {
+        // Story Image - Hikaye görseli
+        storyImageView.contentMode = .scaleAspectFill
+        storyImageView.clipsToBounds = true
+        storyImageView.backgroundColor = AppColors.cardBackground
+        storyImageView.layer.cornerRadius = AppLayout.cardCornerRadius
+        storyImageView.layer.shadowColor = UIColor.black.cgColor
+        storyImageView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        storyImageView.layer.shadowRadius = 12
+        storyImageView.layer.shadowOpacity = 0.08
+        storyImageView.isHidden = true // Başlangıçta gizli
+        
+        // Loading Indicator
+        imageLoadingIndicator.color = AppColors.accent
+        imageLoadingIndicator.hidesWhenStopped = true
+    }
     
     private func setupStoryCard() {
         // Story Card - Modern card design
@@ -112,9 +133,12 @@ class StoryViewController: UIViewController {
     private func setupLayout() {
         view.addSubviews([scrollView])
         scrollView.addSubview(contentView)
-        contentView.addSubviews([storyCard, choicesContainerView])
+        contentView.addSubviews([storyImageView, storyCard, choicesContainerView])
         storyCard.addSubviews([storyTextLabel, readingTimeLabel])
         choicesContainerView.addSubviews([choicesTitleLabel, choicesStackView])
+        
+        // Loading indicator storyImageView'ın üzerine
+        storyImageView.addSubview(imageLoadingIndicator)
         
         setupScrollViewLayout()
         setupContentLayout()
@@ -136,9 +160,21 @@ class StoryViewController: UIViewController {
     }
     
     private func setupContentLayout() {
-        // Story Card - Modern card layout
-        storyCard.snp.makeConstraints { make in
+        // Story Image - Hikaye görselini en üstte göster
+        storyImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(AppLayout.spacing)
+            make.leading.trailing.equalToSuperview().inset(AppLayout.horizontalMargin)
+            make.height.equalTo(200) // Sabit yükseklik
+        }
+        
+        // Loading Indicator - ImageView'ın ortasında
+        imageLoadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        // Story Card - Image'ın altında
+        storyCard.snp.makeConstraints { make in
+            make.top.equalTo(storyImageView.snp.bottom).offset(AppLayout.spacing)
             make.leading.trailing.equalToSuperview().inset(AppLayout.horizontalMargin)
         }
         
@@ -205,6 +241,15 @@ class StoryViewController: UIViewController {
         )
         storyTextLabel.attributedText = attributedText
         
+        // Görsel varsa yükle
+        if let imageUrl = currentNode.imageUrl, !imageUrl.isEmpty {
+            loadStoryImage(from: imageUrl)
+        } else {
+            // Görsel yoksa image view'ı gizle
+            storyImageView.isHidden = true
+            updateStoryCardConstraints(hasImage: false)
+        }
+        
         // Önceki choice'ları temizle  
         choicesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
@@ -222,6 +267,63 @@ class StoryViewController: UIViewController {
         
         // Update progress (simple calculation based on choices made)
         updateProgress()
+    }
+    
+    // MARK: - Image Loading
+    private func loadStoryImage(from urlString: String) {
+        guard let url = URL(string: urlString) else {
+            print("❌ Geçersiz image URL: \(urlString)")
+            storyImageView.isHidden = true
+            updateStoryCardConstraints(hasImage: false)
+            return
+        }
+        
+        // Loading göster
+        imageLoadingIndicator.startAnimating()
+        storyImageView.isHidden = false
+        storyImageView.image = nil
+        updateStoryCardConstraints(hasImage: true)
+        
+        // Görseli indir ve göster
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                self?.imageLoadingIndicator.stopAnimating()
+                
+                if let error = error {
+                    print("❌ Görsel yükleme hatası: \(error.localizedDescription)")
+                    self?.storyImageView.isHidden = true
+                    self?.updateStoryCardConstraints(hasImage: false)
+                    return
+                }
+                
+                guard let data = data, let image = UIImage(data: data) else {
+                    print("❌ Görsel data'sı geçersiz")
+                    self?.storyImageView.isHidden = true
+                    self?.updateStoryCardConstraints(hasImage: false)
+                    return
+                }
+                
+                // Animate image appearance
+                UIView.transition(with: self?.storyImageView ?? UIView(),
+                                  duration: 0.3,
+                                  options: .transitionCrossDissolve) {
+                    self?.storyImageView.image = image
+                }
+                
+                print("✅ Görsel yüklendi: \(urlString)")
+            }
+        }.resume()
+    }
+    
+    private func updateStoryCardConstraints(hasImage: Bool) {
+        storyCard.snp.remakeConstraints { make in
+            if hasImage {
+                make.top.equalTo(storyImageView.snp.bottom).offset(AppLayout.spacing)
+            } else {
+                make.top.equalToSuperview().offset(AppLayout.spacing)
+            }
+            make.leading.trailing.equalToSuperview().inset(AppLayout.horizontalMargin)
+        }
     }
     
     private func createChoiceButton(choice: Choice, index: Int) -> UIView {
